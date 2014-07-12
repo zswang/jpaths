@@ -1,0 +1,10 @@
+{
+  "name": "fec-html5-css3-demo",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "gif.js": "0.1.6"
+  }
+}
