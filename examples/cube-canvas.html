@@ -22,7 +22,9 @@ canvas {
     <img width="200" height="200" />
   </div>
   <div>
-    <input type="button" value="build" /><a download="cube.gif" id="download">download...</a>
+    <input id="remove" type="button" value="remove" />
+    <input id="build" type="button" value="build" />
+    <a download="cube.gif" id="download">download...</a>
   </div>
   <script>
 void function() {
@@ -245,7 +247,10 @@ M #{4} L #{5}';
     document.getElementById('info').innerHTML = "fps:" + fps;
   }, 10);
 
-  document.querySelector('input[type=button]').addEventListener('click', function() {
+  document.querySelector('#remove').addEventListener('click', function() {
+    pathAxis.free();
+  });
+  document.querySelector('#build').addEventListener('click', function() {
     var gif = new GIF({
       repeat: 0,
       workers: 3,

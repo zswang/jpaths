@@ -228,6 +228,7 @@ void function(exports) {
         break;
     }
   }
+
   /**
    * 绘制路径
    * @params{Boolean} all 是否全部更新
@@ -311,6 +312,9 @@ void function(exports) {
    * @param {String} name
    */
   Path.prototype.attr = function(name, value) {
+    if (this.freed) {
+      return;
+    }
     if (arguments.length === 1) {
       if (typeof name === 'string') {
         if (name === 'stroke-width') {
@@ -450,6 +454,32 @@ void function(exports) {
           break;
       }
       return this;
+    }
+  };
+
+  /**
+   * 释放资源
+   */
+  Path.prototype.free = function() {
+    if (this.freed) {
+      return;
+    }
+    this.freed = true;
+    switch (renderMode) {
+      case 'svg':
+      case 'vml':
+        this.elementPath.parentNode.removeChild(this.elementPath);
+        this.elementPath = null;
+        break;
+      case 'canvas':
+        for (var i = 0; i < this.canvasPaths.length; i++) {
+          if (this.canvasPaths[i] === this) {
+            this.canvasPaths.splice(i, 1);
+            this.repaint(true);
+            break;
+          }
+        }
+        break;
     }
   };
 

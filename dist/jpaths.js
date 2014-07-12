@@ -200,6 +200,9 @@ void function(exports) {
    * @see http://code.google.com/p/canvg/
    */
   Path.prototype.repaint = function(all) {
+    if (this.freed) {
+      return;
+    }
     if (!this.canvas) {
       return;
     }
@@ -277,6 +280,9 @@ void function(exports) {
    * @param {String} name
    */
   Path.prototype.attr = function(name, value) {
+    if (this.freed) {
+      return;
+    }
     if (arguments.length === 1) {
       if (typeof name === 'string') {
         if (name === 'stroke-width') {

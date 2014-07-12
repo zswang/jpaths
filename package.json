@@ -2,7 +2,7 @@
   "name": "jpaths",
   "title": "jpaths",
   "description": "JS and HTML alternate javascript template",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/zswang/jpaths",
   "main": "src/jpaths.js",
   "author": {

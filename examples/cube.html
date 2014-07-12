@@ -18,6 +18,9 @@
     <span id="info"></span>
   </div>
   <div id="canvas"></div>
+  <div>
+    <input id="remove" type="button" value="remove" />
+  </div>
   <script>
 void function() {
   /**
@@ -237,6 +240,11 @@ M #{4} L #{5}';
     } else frameCount++;
     document.getElementById('info').innerHTML = "fps:" + fps;
   }, 10);
+
+  document.querySelector('#remove').addEventListener('click', function() {
+    pathAxis.free();
+  });
+
 }();
   </script>
 </body>
