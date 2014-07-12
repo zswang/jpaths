@@ -145,7 +145,6 @@ void function(exports) {
           this.canvasPaths = parentInfo.paths;
         } else {
           this.canvasPaths = [];
-          var paths = [];
           parentList.push({
             parent: this.parent,
             paths: this.canvasPaths
@@ -194,15 +193,13 @@ void function(exports) {
         break;
     }
   }
+
   /**
    * 绘制路径
    * @params{Boolean} all 是否全部更新
    * @see http://code.google.com/p/canvg/
    */
   Path.prototype.repaint = function(all) {
-    if (this.freed) {
-      return;
-    }
     if (!this.canvas) {
       return;
     }
@@ -422,6 +419,32 @@ void function(exports) {
           break;
       }
       return this;
+    }
+  };
+
+  /**
+   * 释放资源
+   */
+  Path.prototype.free = function() {
+    if (this.freed) {
+      return;
+    }
+    this.freed = true;
+    switch (renderMode) {
+      case 'svg':
+      case 'vml':
+        this.elementPath.parentNode.removeChild(this.elementPath);
+        this.elementPath = null;
+        break;
+      case 'canvas':
+        for (var i = 0; i < this.canvasPaths.length; i++) {
+          if (this.canvasPaths[i] === this) {
+            this.canvasPaths.splice(i, 1);
+            this.repaint(true);
+            break;
+          }
+        }
+        break;
     }
   };
 

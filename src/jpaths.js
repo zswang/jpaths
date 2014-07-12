@@ -152,7 +152,6 @@ void function(exports) {
           this.canvasPaths = parentInfo.paths;
         } else {
           this.canvasPaths = [];
-          var paths = [];
           parentList.push({
             parent: this.parent,
             paths: this.canvasPaths
