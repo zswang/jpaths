@@ -36,14 +36,7 @@ void function(exports) {
    * @param {Object} json 数据项
    */
   function format(template, json) {
-    /* debug start */
-    if (typeof template === 'function') { // 函数多行注释处理
-      template = String(template).replace(
-        /^[^\{]*\{\s*\/\*!?[ \f\t\v]*\n?|[ \f\t\v]*\*\/[;|\s]*\}$/g, // 替换掉函数前后部分
-        ''
-      );
-    }
-    /* debug end */
+    
 
     return template.replace(/#\{(.*?)\}/g, function(all, key) {
       return json && (key in json) ? json[key] : "";
@@ -163,17 +156,7 @@ void function(exports) {
         break;
       case 'svg':
         div = document.createElement('div');
-        div.innerHTML = format(function() {/*!
-<svg width=100% height=100% xmlns="http://www.w3.org/2000/svg">
-  <path fill="#{fill}"
-    fill-rule="evenodd"
-    stroke-linejoin="round"
-    fill-opacity="#{fillOpacity}"
-    stroke="#{stroke}"
-    stroke-opacity="#{strokeOpacity}"
-    stroke-width="#{strokeWidth}" d="#{path}"
-</svg>
-*/}, this);
+        div.innerHTML = format("\n<svg width=100% height=100% xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill=\"#{fill}\"\n    fill-rule=\"evenodd\"\n    stroke-linejoin=\"round\"\n    fill-opacity=\"#{fillOpacity}\"\n    stroke=\"#{stroke}\"\n    stroke-opacity=\"#{strokeOpacity}\"\n    stroke-width=\"#{strokeWidth}\" d=\"#{path}\"\n</svg>\n", this);
         this.elementPath = div.lastChild.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -192,24 +175,7 @@ void function(exports) {
         this.filled = this.fill == 'none' ? 'f' : 't';
         this.stroked = this.stroke == 'none' ? 'f' : 't';
         this.zoom = ieZoom;
-        div.innerHTML = format(function() {
-/*!
-<v:shape class="jpaths_path_shape jpaths_vml"
-  coordsize="#{zoom},#{zoom}"
-  stroked="#{stroked}"
-  filled="#{filled}"
-  path="#{path}">
-  <v:stroke class="jpaths_vml"
-    opacity="#{strokeOpacity}"
-    color="#{stroke}"
-    weight="#{strokeWidth}">
-  </v:stroke>
-  <v:fill class="jpaths_vml"
-    opacity="#{fillOpacity}"
-    color="#{fill}">
-  </v:fill>
-</v:shape>
-*/}, this);
+        div.innerHTML = format("\n<v:shape class=\"jpaths_path_shape jpaths_vml\"\n  coordsize=\"#{zoom},#{zoom}\"\n  stroked=\"#{stroked}\"\n  filled=\"#{filled}\"\n  path=\"#{path}\">\n  <v:stroke class=\"jpaths_vml\"\n    opacity=\"#{strokeOpacity}\"\n    color=\"#{stroke}\"\n    weight=\"#{strokeWidth}\">\n  </v:stroke>\n  <v:fill class=\"jpaths_vml\"\n    opacity=\"#{fillOpacity}\"\n    color=\"#{fill}\">\n  </v:fill>\n</v:shape>\n", this);
         this.elementPath = div.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -459,29 +425,7 @@ void function(exports) {
 
   if (renderMode === 'vml') {
     document.createStyleSheet().cssText = format(
-      function() {/*!
-.#{this}_vml {
-  behavior: url(#default#VML);
-}
-.#{this}_path_shape {
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: 0;
-  left: 0;
-  top: 0;
-  position: absolute;
-}
-.#{this}_path_panel {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-  position: relative;
-}
-*/
-      }, 'jpaths'
+      "\n.#{this}_vml {\n  behavior: url(#default#VML);\n}\n.#{this}_path_shape {\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: 0;\n  left: 0;\n  top: 0;\n  position: absolute;\n}\n.#{this}_path_panel {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  padding: 0;\n  margin: 0;\n  position: relative;\n}\n", 'jpaths'
     );
   }
   exports.create = create;
