@@ -6,7 +6,7 @@
     "Zswang <wjhu111@21cn.com>"
   ],
   "description": "svg and vml and canvas path paint",
-  "main": "src/jpaths.js",
+  "main": "dist/jpaths.js",
   "moduleType": [
     "globals"
   ],

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <meta name="author" content="http://weibo.com/zswang" />
+  <title>jpaths cube examples</title>
+  <script src="../src/jpaths.js"></script>
+  <script src='components/json-editor/dist/jsoneditor.js'></script>
+  <style>
+#canvas {
+  border: solid 1px #ccc;
+  width: 500px;
+  height: 500px;
+  position: relative;
+  float: left;
+}
+#editor_holder {
+  padding: 15px;
+  position: relative;
+  float: left;
+}
+  </style>
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">
+</head>
+<body>
+  <div id="canvas"></div>
+  <div id="editor_holder"></div>
+  <script>
+void function() {
+  var pathBase = jpaths.create({
+    parent: 'canvas'
+  });
+
+  JSONEditor.defaults.options.theme = 'bootstrap2';
+  var editor = new JSONEditor(
+    document.getElementById('editor_holder'),
+    {
+      schema: {
+        type: 'object',
+        properties: {
+          path: {
+            title: '路径',
+            type: 'string',
+            format: 'text',
+            default: 'M10,10 L210,10 L210,210 L10,210 Z'
+          },
+          stroke: {
+            title: '边线颜色',
+            type: 'string',
+            default: '#ff0000',
+            format: 'color'
+          },
+          'stroke-opacity': {
+            title: '边线透明度',
+            type: 'integer',
+            default: 1,
+            minimum: 0,
+            maximum: 1
+          },
+          'stroke-width': {
+            title: '边线宽度',
+            type: 'integer',
+            default: 1,
+          },
+          fill: {
+            title: '填充颜色',
+            type: 'string',
+            default: '#00ff00',
+            format: 'color'
+          },
+          'fill-opacity': {
+            title: '填充透明',
+            type: 'number',
+            default: 1,
+            minimum: 0,
+            maximum: 1
+          }
+        }
+      }
+    }
+  );
+
+  editor.on("change",  function() {
+    pathBase.attr(editor.getValue());
+  });
+}();
+  </script>
+</body>
+</html>

@@ -29,7 +29,7 @@ void function(exports) {
    * 容器列表，如果容器是一样的，则不用生成新的 svg 对象
    */
   var parentList = [];
-    
+
   /**
    * 格式化函数
    * @param {String} template 模板
@@ -127,7 +127,7 @@ void function(exports) {
     this.strokeWidth = options.strokeWidth || options['stroke-width'] || 1;
     this.strokeOpacity = options.strokeOpacity || options['stroke-opacity'] || 1;
     this.path = options.path || 'M 0,0';
-    
+
     // 处理相同的容器
     var parentInfo;
     for (var i = parentList.length - 1; i >= 0; i--) {
@@ -299,7 +299,7 @@ void function(exports) {
       context.restore();
     };
 
-  /*
+  /**
    * 设置或获取属性
    * @param {Object} values
    * @param {Boolean} batch 是否正在批处理
