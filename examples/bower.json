@@ -5,7 +5,6 @@
     "**/*.txt"
   ],
   "license": "MIT",
-  "main": "dist/jpaths.js",
   "dependencies": {
     "gif.js": "0.1.6",
     "json-editor": "0.6.19"

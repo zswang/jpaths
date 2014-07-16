@@ -52,8 +52,10 @@ void function() {
           },
           'stroke-opacity': {
             title: '边线透明度',
-            type: 'integer',
+            type: 'number',
+            format: 'range',
             default: 1,
+            multipleOf: 0.01,
             minimum: 0,
             maximum: 1
           },
@@ -71,7 +73,9 @@ void function() {
           'fill-opacity': {
             title: '填充透明',
             type: 'number',
+            format: 'range',
             default: 1,
+            multipleOf: 0.01,
             minimum: 0,
             maximum: 1
           }
