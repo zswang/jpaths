@@ -22,6 +22,6 @@ body = String(body).
     /function\s*\(\s*\)\s*\{\s*\/\*\!([\s\S]*?)\*\/\s*\}/g,
     function(all, text) {
       return JSON.stringify(text);
-      }
+    }
   );
 fs.writeFileSync(output, body);

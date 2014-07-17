@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <meta name="author" content="http://weibo.com/zswang" />
+  <title>path editor</title>
+  <script src="../src/jpaths.js"></script>
+
+</head>
+<body>
+  <header></header>
+  
+  <canvas width="500" height="500"></canvas>
+  <footer></footer>
+  <script>
+var PointsEditor = PointsEditor || {};
+void function(exports) {
+
+  /**
+   * 正在更新
+   */
+  var STATUS_UPDATING = 1;
+
+  function Editor(options) {
+    /**
+     * 状态
+     * "updating": 更新中
+     */
+    this.status = {};
+    this.points = {};
+    this.selection = {};
+    this.origin = options.origin || [0, 0];
+    this.canvas = options.canvas;
+    if (this.canvas) {
+      this.context = options.canvas.getContext('2d');
+    }
+  }
+
+  Editor.prototype.beginUpdate = function() {
+    this.status[STATUS_UPDATING] = true;
+  };
+
+  Editor.prototype.endUpdate = function() {
+    this.status[STATUS_UPDATING] = false;
+    this.repaint();
+  };
+
+  Editor.prototype.repaint = function() {
+    if (this.status[STATUS_UPDATING]) {
+      return;
+    }
+    if (!this.context) {
+      return;
+    }
+    this.drawAll();
+  };
+
+  Editor.prototype.set = function(name, x, y) {
+    console.log('set(name: %s)', name);
+    this.points[name] = [x, y];
+    this.repaint();
+  };
+
+  Editor.prototype.get = function(name) {
+    return this.points[name];
+  };
+
+  Editor.prototype.remove = function(name, x, y) {  
+    this.repaint();
+  };
+
+  Editor.prototype.drawPoint = function(name) {
+    console.log('drawPoint(name: %s)', name);
+    var p = this.points[name];
+    if (!p) {
+      return;
+    }
+    this.context.beginPath();
+    this.context.arc(p[0], p[1], 5, 0, 2 * Math.PI);
+    this.context.stroke();
+  };
+
+  Editor.prototype.drawRect = function(rect) {
+
+  };
+
+  Editor.prototype.drawAll = function() {
+    for (var name in this.points) {
+      this.drawPoint(name);
+    }
+  };
+
+  exports.create = function(options) {
+    return new Editor(options);
+  }
+}(PointsEditor);
+  </script>
+  <script>
+void function() {
+  var editor =  PointsEditor.create({
+    canvas: document.querySelector('canvas')
+  });
+
+  editor.set('p1', 100, 100);
+}();
+  </script>
+</body>
+</html>
