@@ -26,11 +26,37 @@ void function(exports) {
   /**
    * 获得两点间距离
    */
-  function distance(a, b) {
+  function pointToPoint(a, b) {
     return Math.sqrt(
       Math.pow(a[0] - b[0], 2) +
       Math.pow(a[1] - b[1], 2)
     );
+  }
+
+  /**
+   * 计算点的角度
+   * @param {Array} origin 圆心坐标
+   * @param {Array} point 点坐标
+   * @return {Number} 返回角度,单位弧度
+   */
+  function pointToAngle(origin, point){
+    return Math.atan2(point[1] - origin[1], point[0] - origin[0]);
+  }
+
+  /**
+   * 旋转一个点坐标
+   * @param {Array} point 目标坐标
+   * @param {Array} center 中心点
+   * @param {Number} angle 选择角度，单位:弧度
+   * @return {Array} 返回旋转后的坐标
+   */
+  function rotatePoint(point, center, angle){
+    var radius = pointToPoint(center, point);
+    angle = pointToAngle(center, point) + angle;
+    return [
+      center[0] + Math.cos(angle) * radius,
+      center[1] + Math.sin(angle) * radius
+    ];
   }
 
   function Editor(options) {
@@ -52,7 +78,11 @@ void function(exports) {
     this.status = {};
     this.points = {};
     this.rects = {}; // 加快查询时间
+    this.downPoints = {};
+
     this.selection = {};
+    this.selectList = [];
+    this.selectText = '';
 
     this.context = this.canvas.getContext('2d');
     var self = this;
@@ -62,8 +92,22 @@ void function(exports) {
           typeof e.offsetY == 'number' ? e.offsetY : e.layerY
       ];
       document.querySelector('label').innerHTML = pos.join() + self.hotPoint;
-      if (self.status['mousedown'] && self.hotPoint) {
-        self.set(self.hotPoint, pos);
+      var offset = [0, 0];
+      if (self.downPos) {
+        offset = [
+          pos[0] - self.downPos[0],
+          pos[1] - self.downPos[1] 
+        ];
+      }
+      if (self.status['mousedown'] && self.downPoints) {
+        for (var name in self.downPoints) {
+          var pos = self.downPoints[name];
+          pos = [pos[0] + offset[0], pos[1] + offset[1]];
+          self.points[name] = pos;
+        }
+        self.repaint();
+        //self.moveSelection(offset);
+        //self.set(self.hotPoint, pos);
         return;
       }
       self.setHotPoint(self.hot(pos));
@@ -75,32 +119,80 @@ void function(exports) {
           typeof e.offsetX == 'number' ? e.offsetX : e.layerX,
           typeof e.offsetY == 'number' ? e.offsetY : e.layerY
       ];
+      self.downPos = pos;
       var hotPoint = self.hot(pos);
       if (hotPoint) {
-        self.hotPoint = name;
-        self.select(hotPoint);
+        self.hotPoint = hotPoint;
+
+        if (e.shiftKey) {
+          if (self.selection[hotPoint]) {
+            self.selectList = self.selectList.filter(function(item) {
+              return item !== hotPoint;
+            });
+          } else {
+            self.selectList.push(hotPoint);
+          }
+          self.select(self.selectList);
+        } else {
+          if (self.selection[hotPoint]) {
+
+          } else {
+            self.select(hotPoint);
+          }
+        }
+        self.downPoints = {};
+        self.selectList.forEach(function(name) {
+          self.downPoints[name] = self.points[name];
+        });
         return;
       }
-      var name = '';
-      var i = 0;
-      while(true) {
-        name = 'p' + i;
-        if (!self.points[name]) {
-          break;
+      if (mode === 'add') {
+        var name = '';
+        var i = 0;
+        while(true) {
+          name = 'p' + i;
+          if (!self.points[name]) {
+            break;
+          }
+          i++;
         }
-        i++;
+        self.hotPoint = name;
+        self.set(name, pos);
+        self.select(name);
       }
-      self.hotPoint = name;
-      self.set(name, pos);
-      self.select(name);
     });
     document.addEventListener('mouseup', function(e) {
       self.status['mousedown'] = false;
+      self.downPoints = null;
     });
     this.canvas.addEventListener('losecapture', function(e) {
       self.status['mousedown'] = false;
+      self.downPoints = null;
     });
   }
+
+  Editor.prototype.moveSelection = function(offset) {
+    for (var name in this.selection) {
+      var pos = this.points[name];
+      pos[0] += offset[0];
+      pos[1] += offset[1];
+    };
+    this.repaint();
+  };
+
+  Editor.prototype.rotateSelection = function(angle) {
+    var self = this;
+    if (this.selectList.length < 2) {
+      return;
+    }
+    var center = self.points[this.selectList[0]];
+    this.selectList.forEach(function(name, index) {
+      if (index > 0) {
+        self.points[name] = rotatePoint(self.points[name], center, angle);
+      }
+    });
+    this.repaint();
+  };
 
   Editor.prototype.setMode = function(mode) {
     if (this.mode === mode) {
@@ -199,6 +291,9 @@ void function(exports) {
     }
     this.context.beginPath();
     this.context.arc(p[0], p[1], this.radius, 0, 2 * Math.PI);
+    this.context.strokeText(name, p[0], p[1] - 12);
+    this.context.stroke();
+
     if (this.hotPoint === name) {
       this.context.save();
       this.context.fillStyle = this.hotColor;
@@ -210,7 +305,16 @@ void function(exports) {
       this.context.fill();
       this.context.restore();
     }
-    this.context.strokeText(name, p[0], p[1] - 12);
+
+    this.context.beginPath();
+    if (name === this.selectList[0]) {
+      this.context.moveTo(p[0] - 5 * this.radius, p[1]);
+      this.context.lineTo(p[0] + 5 * this.radius, p[1]);
+      this.context.moveTo(p[0], p[1] - 5 * this.radius);
+      this.context.lineTo(p[0], p[1] + 5 * this.radius);
+    } else if (name === this.selectList[this.selectList.length - 1]) {
+      this.context.arc(p[0], p[1], this.radius * 2, 0, 2 * Math.PI, false);
+    }
     this.context.stroke();
   };
 
@@ -223,7 +327,7 @@ void function(exports) {
   Editor.prototype.hot = function(p) {
     for (var name in this.points) {
       var point = this.points[name];
-      if (distance(p, point) <= this.radius * 1.2) {
+      if (pointToPoint(p, point) <= this.radius * 1.2) {
         return name;
       }
     }
@@ -240,10 +344,11 @@ void function() {
     parent: document.querySelector('#panel')
   });
 
+  editor.set('p0', 10, 100);
   editor.set('p1', 100, 100);
   editor.set('p2', 150, 200);
   editor.set('p3', 250, 200);
-  editor.select('p3');
+  editor.select(['p1', 'p3']);
 }();
   </script>
 </body>
