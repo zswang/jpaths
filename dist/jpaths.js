@@ -29,7 +29,7 @@ void function(exports) {
    * 容器列表，如果容器是一样的，则不用生成新的 svg 对象
    */
   var parentList = [];
-    
+
   /**
    * 格式化函数
    * @param {String} template 模板
@@ -77,13 +77,9 @@ void function(exports) {
               /\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)/gi,
               function(all, x1, y1, x2, y2, x, y) {
                 current = [0, 0];
-                result.push(['C', [
-                  +x1 + current[0], +y1 + current[1],
-                  +x2 + current[0], +y2 + current[1],
-                  +x + current[0], +y + current[1]
-                ]]);
+                result.push(['C', [+x1 + current[0], +y1 + current[1], +x2 + current[0], +y2 + current[1], +x + current[0], +y + current[1]]]);
                 current = [+x + current[0], +y + current[1]];
-            });
+              });
             break;
           case 'Z':
             result.push(['Z']);
@@ -120,7 +116,7 @@ void function(exports) {
     this.strokeWidth = options.strokeWidth || options['stroke-width'] || 1;
     this.strokeOpacity = options.strokeOpacity || options['stroke-opacity'] || 1;
     this.path = options.path || 'M 0,0';
-    
+
     // 处理相同的容器
     var parentInfo;
     for (var i = parentList.length - 1; i >= 0; i--) {
@@ -226,7 +222,7 @@ void function(exports) {
     var movePos = [0, 0]; // 位移坐标
     for (i = 0; i < this.pathDetails.length; i++) {
       var item = this.pathDetails[i];
-      switch(item[0]) {
+      switch (item[0]) {
         case 'Z':
           context.closePath();
           current = movePos;
@@ -251,21 +247,21 @@ void function(exports) {
           movePos = [item[1][0], item[1][1]];
           context.moveTo(item[1][0], item[1][1]);
           break;
-        }
       }
-      if (this.stroke !== 'none') {
-          context.strokeStyle = this.stroke;
-          context.stroke();
-      }
-      context.lineWidth = this.strokeWidth;
-      if (this.fill !== 'none') {
-          context.fillStyle = this.fill;
-          context.fill();
-      }
-      context.restore();
-    };
+    }
+    if (this.stroke !== 'none') {
+      context.strokeStyle = this.stroke;
+      context.stroke();
+    }
+    context.lineWidth = this.strokeWidth;
+    if (this.fill !== 'none') {
+      context.fillStyle = this.fill;
+      context.fill();
+    }
+    context.restore();
+  };
 
-  /*
+  /**
    * 设置或获取属性
    * @param {Object} values
    * @param {Boolean} batch 是否正在批处理
@@ -294,10 +290,10 @@ void function(exports) {
         return this;
       }
     } else if (arguments.length > 1) {
-      switch(name) {
+      switch (name) {
         case 'path':
           if (this.path === value) {
-             break;
+            break;
           }
           this.path = value;
           switch (renderMode) {

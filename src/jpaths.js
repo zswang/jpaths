@@ -36,14 +36,14 @@ void function(exports) {
    * @param {Object} json 数据项
    */
   function format(template, json) {
-    /* debug start */
+    /*<debug>*/
     if (typeof template === 'function') { // 函数多行注释处理
       template = String(template).replace(
         /^[^\{]*\{\s*\/\*!?[ \f\t\v]*\n?|[ \f\t\v]*\*\/[;|\s]*\}$/g, // 替换掉函数前后部分
         ''
       );
     }
-    /* debug end */
+    /*</debug>*/
 
     return template.replace(/#\{(.*?)\}/g, function(all, key) {
       return json && (key in json) ? json[key] : "";
@@ -84,13 +84,9 @@ void function(exports) {
               /\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)/gi,
               function(all, x1, y1, x2, y2, x, y) {
                 current = [0, 0];
-                result.push(['C', [
-                  +x1 + current[0], +y1 + current[1],
-                  +x2 + current[0], +y2 + current[1],
-                  +x + current[0], +y + current[1]
-                ]]);
+                result.push(['C', [+x1 + current[0], +y1 + current[1], +x2 + current[0], +y2 + current[1], +x + current[0], +y + current[1]]]);
                 current = [+x + current[0], +y + current[1]];
-            });
+              });
             break;
           case 'Z':
             result.push(['Z']);
@@ -162,7 +158,8 @@ void function(exports) {
         break;
       case 'svg':
         div = document.createElement('div');
-        div.innerHTML = format(function() {/*!
+        div.innerHTML = format(function() {
+/*!
 <svg width=100% height=100% xmlns="http://www.w3.org/2000/svg">
   <path fill="#{fill}"
     fill-rule="evenodd"
@@ -172,7 +169,8 @@ void function(exports) {
     stroke-opacity="#{strokeOpacity}"
     stroke-width="#{strokeWidth}" d="#{path}"
 </svg>
-*/}, this);
+*/
+        }, this);
         this.elementPath = div.lastChild.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -208,7 +206,8 @@ void function(exports) {
     color="#{fill}">
   </v:fill>
 </v:shape>
-*/}, this);
+*/
+        }, this);
         this.elementPath = div.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -260,7 +259,7 @@ void function(exports) {
     var movePos = [0, 0]; // 位移坐标
     for (i = 0; i < this.pathDetails.length; i++) {
       var item = this.pathDetails[i];
-      switch(item[0]) {
+      switch (item[0]) {
         case 'Z':
           context.closePath();
           current = movePos;
@@ -285,19 +284,19 @@ void function(exports) {
           movePos = [item[1][0], item[1][1]];
           context.moveTo(item[1][0], item[1][1]);
           break;
-        }
       }
-      if (this.stroke !== 'none') {
-          context.strokeStyle = this.stroke;
-          context.stroke();
-      }
-      context.lineWidth = this.strokeWidth;
-      if (this.fill !== 'none') {
-          context.fillStyle = this.fill;
-          context.fill();
-      }
-      context.restore();
-    };
+    }
+    if (this.stroke !== 'none') {
+      context.strokeStyle = this.stroke;
+      context.stroke();
+    }
+    context.lineWidth = this.strokeWidth;
+    if (this.fill !== 'none') {
+      context.fillStyle = this.fill;
+      context.fill();
+    }
+    context.restore();
+  };
 
   /**
    * 设置或获取属性
@@ -328,10 +327,10 @@ void function(exports) {
         return this;
       }
     } else if (arguments.length > 1) {
-      switch(name) {
+      switch (name) {
         case 'path':
           if (this.path === value) {
-             break;
+            break;
           }
           this.path = value;
           switch (renderMode) {
@@ -488,7 +487,8 @@ void function(exports) {
 
   if (renderMode === 'vml') {
     document.createStyleSheet().cssText = format(
-      function() {/*!
+      function() {
+/*!
 .#{this}_vml {
   behavior: url(#default#VML);
 }
