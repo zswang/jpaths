@@ -1,12 +1,15 @@
-var jpaths = typeof exports === 'undefined' ? jpaths || {} : exports;
+(function(exportName) {
 
-void function(exports) {
   'use strict';
+
+  var exports = exports || {};
+
   /**
    * jpaths
-   * 一个简单绘图库，兼容 svg、vml、canvas，路径只支持其交集。
+   *
+   * @file 一个简单绘图库，兼容 svg、vml、canvas，路径只支持其交集。
    * @author 王集鹄(wangjihu,http://weibo.com/zswang)
-   * @version 2014-07-11
+   * @version 2015-04-11
    */
 
   /**
@@ -32,18 +35,19 @@ void function(exports) {
 
   /**
    * 格式化函数
-   * @param {String} template 模板
+   *
+   * @param {string} template 模板
    * @param {Object} json 数据项
    */
   function format(template, json) {
-    /* debug start */
+    /*<debug>*/
     if (typeof template === 'function') { // 函数多行注释处理
       template = String(template).replace(
         /^[^\{]*\{\s*\/\*!?[ \f\t\v]*\n?|[ \f\t\v]*\*\/[;|\s]*\}$/g, // 替换掉函数前后部分
         ''
       );
     }
-    /* debug end */
+    /*</debug>*/
 
     return template.replace(/#\{(.*?)\}/g, function(all, key) {
       return json && (key in json) ? json[key] : "";
@@ -52,8 +56,9 @@ void function(exports) {
 
   /**
    * 解析路径字符串中的详情
-   * @param{String} path 路径表达式
-   * @return{Array} 返回每个子路径
+   *
+   * @param {string} path 路径表达式
+   * @return {Array} 返回每个子路径
    */
   function parsePath(path) {
     var current = [0, 0];
@@ -84,13 +89,9 @@ void function(exports) {
               /\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)\s*,?\s*([+-]?\d+(?:\.\d+)?)/gi,
               function(all, x1, y1, x2, y2, x, y) {
                 current = [0, 0];
-                result.push(['C', [
-                  +x1 + current[0], +y1 + current[1],
-                  +x2 + current[0], +y2 + current[1],
-                  +x + current[0], +y + current[1]
-                ]]);
+                result.push(['C', [+x1 + current[0], +y1 + current[1], +x2 + current[0], +y2 + current[1], +x + current[0], +y + current[1]]]);
                 current = [+x + current[0], +y + current[1]];
-            });
+              });
             break;
           case 'Z':
             result.push(['Z']);
@@ -104,14 +105,15 @@ void function(exports) {
 
   /**
    * 矢量路径类
+   *
    * @param {Object} options 配置
-   *    @field {String|Element} parent 容器
-   *    @field {String} fill 填充色
-   *    @field {Number} fillOpacity 填充透明度
-   *    @field {String} stroke 描边色
-   *    @field {Number} strokeOpacity 描边透明度
-   *    @field {Number} strokeWidth 描边宽度
-   *    @field {String} path 路径
+   * @param {string|Element} options.parent 容器
+   * @param {string} options.fill 填充色
+   * @param {number} options.fillOpacity 填充透明度
+   * @param {string} options.stroke 描边色
+   * @param {number} options.strokeOpacity 描边透明度
+   * @param {number} options.strokeWidth 描边宽度
+   * @param {string} options.path 路径
    */
   function Path(options) {
     options = options || {};
@@ -162,7 +164,8 @@ void function(exports) {
         break;
       case 'svg':
         div = document.createElement('div');
-        div.innerHTML = format(function() {/*!
+        div.innerHTML = format( /*#*/ function() {
+          /*!
 <svg width=100% height=100% xmlns="http://www.w3.org/2000/svg">
   <path fill="#{fill}"
     fill-rule="evenodd"
@@ -172,7 +175,8 @@ void function(exports) {
     stroke-opacity="#{strokeOpacity}"
     stroke-width="#{strokeWidth}" d="#{path}"
 </svg>
-*/}, this);
+*/
+        }, this);
         this.elementPath = div.lastChild.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -191,8 +195,8 @@ void function(exports) {
         this.filled = this.fill == 'none' ? 'f' : 't';
         this.stroked = this.stroke == 'none' ? 'f' : 't';
         this.zoom = ieZoom;
-        div.innerHTML = format(function() {
-/*!
+        div.innerHTML = format( /*#*/ function() {
+          /*!
 <v:shape class="jpaths_path_shape jpaths_vml"
   coordsize="#{zoom},#{zoom}"
   stroked="#{stroked}"
@@ -208,7 +212,8 @@ void function(exports) {
     color="#{fill}">
   </v:fill>
 </v:shape>
-*/}, this);
+*/
+        }, this);
         this.elementPath = div.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -230,7 +235,8 @@ void function(exports) {
 
   /**
    * 绘制路径
-   * @params{Boolean} all 是否全部更新
+   *
+   * @params {boolean} all 是否全部更新
    * @see http://code.google.com/p/canvg/
    */
   Path.prototype.repaint = function(all) {
@@ -238,8 +244,10 @@ void function(exports) {
       return;
     }
     var context = this.canvas.getContext('2d');
+    if (!context) {
+      return;
+    }
     var i;
-    if (!context) return;
     if (all) {
       context.save();
       context.fillStyle = 'transparent';
@@ -260,7 +268,7 @@ void function(exports) {
     var movePos = [0, 0]; // 位移坐标
     for (i = 0; i < this.pathDetails.length; i++) {
       var item = this.pathDetails[i];
-      switch(item[0]) {
+      switch (item[0]) {
         case 'Z':
           context.closePath();
           current = movePos;
@@ -285,30 +293,32 @@ void function(exports) {
           movePos = [item[1][0], item[1][1]];
           context.moveTo(item[1][0], item[1][1]);
           break;
-        }
       }
-      if (this.stroke !== 'none') {
-          context.strokeStyle = this.stroke;
-          context.stroke();
-      }
-      context.lineWidth = this.strokeWidth;
-      if (this.fill !== 'none') {
-          context.fillStyle = this.fill;
-          context.fill();
-      }
-      context.restore();
-    };
+    }
+    if (this.stroke !== 'none') {
+      context.strokeStyle = this.stroke;
+      context.stroke();
+    }
+    context.lineWidth = this.strokeWidth;
+    if (this.fill !== 'none') {
+      context.fillStyle = this.fill;
+      context.fill();
+    }
+    context.restore();
+  };
 
   /**
    * 设置或获取属性
+   *
    * @param {Object} values
-   * @param {Boolean} batch 是否正在批处理
+   * @param {boolean} batch 是否正在批处理
    * @or
-   * @param {String} name
-   * @param {String} value
-   * @param {Boolean} batch 是否正在批处理
+   * @param {string} name
+   * @param {string} value
+   * @param {boolean} batch 是否正在批处理
    * @or
-   * @param {String} name
+   * @param {string} name
+   * @return {Any} 返回该属性值
    */
   Path.prototype.attr = function(name, value) {
     if (this.freed) {
@@ -328,10 +338,10 @@ void function(exports) {
         return this;
       }
     } else if (arguments.length > 1) {
-      switch(name) {
+      switch (name) {
         case 'path':
           if (this.path === value) {
-             break;
+            break;
           }
           this.path = value;
           switch (renderMode) {
@@ -487,8 +497,8 @@ void function(exports) {
   }
 
   if (renderMode === 'vml') {
-    document.createStyleSheet().cssText = format(
-      function() {/*!
+    document.createStyleSheet().cssText = format( /*#*/ function() {
+      /*!
 .#{this}_vml {
   behavior: url(#default#VML);
 }
@@ -510,9 +520,20 @@ void function(exports) {
   position: relative;
 }
 */
-      }, 'jpaths'
-    );
+    }, exportName);
   }
   exports.create = create;
 
-}(jpaths);
+  if (typeof define === 'function') {
+    if (define.amd || define.cmd) {
+      define(function() {
+        return exports;
+      });
+    }
+  } else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = exports;
+  } else {
+    window[exportName] = exports;
+  }
+
+})('jpaths');

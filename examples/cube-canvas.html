@@ -5,7 +5,7 @@
   <meta name="author" content="http://weibo.com/zswang" />
   <title>jpaths cube examples</title>
   <script src="../src/jpaths.js"></script>
-  <script src="components/gif.js/dist/gif.js"></script>
+  <script src="../lib/gif.js/dist/gif.js"></script>
   <style>
 canvas {
   border: solid 1px #ccc;
@@ -56,16 +56,16 @@ void function() {
     var indexs = point instanceof Array ? [0, 1, 2] : ['x', 'y', 'z'];
     var t = point[indexs[rotate_axis[axis][0]]];
     var p = point[indexs[rotate_axis[axis][1]]];
-    point[indexs[rotate_axis[axis][0]]] = 
+    point[indexs[rotate_axis[axis][0]]] =
       t * Math.cos(radians) - p * Math.sin(radians);
-    point[indexs[rotate_axis[axis][1]]] = 
+    point[indexs[rotate_axis[axis][1]]] =
       t * Math.sin(radians) + p * Math.cos(radians);
     return point;
   }
 
   /**
    * 旋转x轴
-   * @param{Array|Object} point 原坐标 
+   * @param{Array|Object} point 原坐标
    * @param{Number} radians 选择角度，单位弧度
    */
   function rotateX(point, radians) {
@@ -74,7 +74,7 @@ void function() {
 
   /**
    * 旋转y轴
-   * @param{Array|Object} point 原坐标 
+   * @param{Array|Object} point 原坐标
    * @param{Number} radians 选择角度，单位弧度
    */
   function rotateY(point, radians) {
@@ -83,7 +83,7 @@ void function() {
 
   /**
    * 旋转z轴
-   * @param{Array|Object} point 原坐标 
+   * @param{Array|Object} point 原坐标
    * @param{Number} radians 选择角度，单位弧度
    */
   function rotateZ(point, radians) {
@@ -158,7 +158,7 @@ M #{3} L #{7}';
    * 抽线端点示意图
    *        0  5
    *        | /
-   *        |/    
+   *        |/
    * 2 - - -+- - - 3
    *       /|
    *      / |
@@ -227,7 +227,7 @@ M #{4} L #{5}';
       temp.push(t);
     }
     pathCube.attr('path', format(cubeTemplate, temp));
-  }  
+  }
 
   var start = new Date;
   var lifetime = 20000;
@@ -255,7 +255,7 @@ M #{4} L #{5}';
       repeat: 0,
       workers: 3,
       quality: 10, // 品质
-      workerScript: 'components/gif.js/dist/gif.worker.js'
+      workerScript: '../lib/gif.js/dist/gif.worker.js'
     });
 
     for (var i = 0; i < lifetime; i += 200) {
@@ -270,7 +270,7 @@ M #{4} L #{5}';
       document.querySelector('#download').href = url;
       self.disabled = false;
     });
-    gif.render();  
+    gif.render();
   });
 
 }();

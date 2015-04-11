@@ -4,7 +4,14 @@
   <meta charset=utf-8 />
   <meta name="author" content="http://weibo.com/zswang" />
   <title>jpaths cube examples</title>
-  <script src="../src/jpaths.js"></script>
+  <script src="../lib/requirejs/require.js"></script>
+  <script>
+require.config({
+  paths: {
+      jpaths: '../jpaths'
+  }
+});
+  </script>
   <script src='../lib/json-editor/dist/jsoneditor.js'></script>
   <style>
 #canvas {
@@ -26,7 +33,7 @@
   <div id="canvas"></div>
   <div id="editor_holder"></div>
   <script>
-void function() {
+require(['jpaths'], function(jpaths) {
   var pathBase = jpaths.create({
     parent: 'canvas'
   });
@@ -87,7 +94,7 @@ void function() {
   editor.on("change",  function() {
     pathBase.attr(editor.getValue());
   });
-}();
+});
   </script>
 </body>
 </html>

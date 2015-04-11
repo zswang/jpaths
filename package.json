@@ -2,7 +2,7 @@
   "name": "jpaths",
   "title": "jpaths",
   "description": "JS and HTML alternate javascript template",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "homepage": "https://github.com/zswang/jpaths",
   "main": "src/jpaths.js",
   "author": {
@@ -25,10 +25,11 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "uglify-js": "*",
-    "jshint": "*"
+    "jdists": "0.1.10",
+    "jshint": "2.5.8"
   },
   "scripts": {
-    "compress": "node build src/jpaths.js dist/jpaths.js && uglifyjs dist/jpaths.js -o dist/jpaths.min.js --source-map dist/jpaths.min.js.map -p 5 -c -m",
+    "dist": "jdists src/jpaths.js -o jpaths.js && uglifyjs jpaths.js -o jpaths.min.js -p 5 -c -m",
     "lint": "jshint src/*.js *.json"
   }
 }
