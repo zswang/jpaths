@@ -464,6 +464,7 @@
   }
   exports.create = create;
 
+<<<<<<< HEAD:jpaths.js
   if (typeof define === 'function') {
     if (define.amd || define.cmd) {
       define(function() {
@@ -477,3 +478,6 @@
   }
 
 })('jpaths');
+=======
+}(jpaths);
+>>>>>>> FETCH_HEAD:dist/jpaths.js
