@@ -96,7 +96,7 @@ void function(exports) {
       if (self.downPos) {
         offset = [
           pos[0] - self.downPos[0],
-          pos[1] - self.downPos[1] 
+          pos[1] - self.downPos[1]
         ];
       }
       if (self.status['mousedown'] && self.downPoints) {
@@ -116,8 +116,8 @@ void function(exports) {
       self.status['mousedown'] = true;
 
       var pos = [
-          typeof e.offsetX == 'number' ? e.offsetX : e.layerX,
-          typeof e.offsetY == 'number' ? e.offsetY : e.layerY
+        typeof e.offsetX == 'number' ? e.offsetX : e.layerX,
+        typeof e.offsetY == 'number' ? e.offsetY : e.layerY
       ];
       self.downPos = pos;
       var hotPoint = self.hot(pos);

@@ -2,7 +2,7 @@
   "name": "jpaths",
   "title": "jpaths",
   "description": "JS and HTML alternate javascript template",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/zswang/jpaths",
   "main": "src/jpaths.js",
   "author": {
@@ -24,7 +24,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "uglify-js": "*",
+    "uglify-js": "2.4.15",
+    "jdists": "0.1.10",
     "jdists": "0.1.10",
     "jshint": "2.5.8"
   },
