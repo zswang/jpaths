@@ -536,4 +536,4 @@
     window[exportName] = exports;
   }
 
-}(jpaths);
+})('jpaths');
