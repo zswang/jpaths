@@ -159,13 +159,13 @@
       case 'svg':
         div = document.createElement('div');
         div.innerHTML = format( /*#*/ "\n<svg width=100% height=100% xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill=\"#{fill}\"\n    fill-rule=\"evenodd\"\n    stroke-linejoin=\"round\"\n    fill-opacity=\"#{fillOpacity}\"\n    stroke=\"#{stroke}\"\n    stroke-opacity=\"#{strokeOpacity}\"\n    stroke-width=\"#{strokeWidth}\" d=\"#{path}\"/>\n</svg>\n", this);
-        this.elementPath = div.lastChild.lastChild;
+        this.elementPath = div.querySelector('path');
 
         if (parentInfo) {
           this.element = parentInfo.element;
           this.element.appendChild(this.elementPath);
         } else {
-          this.element = div.lastChild;
+          this.element = div.querySelector('svg');
           parentList.push({
             parent: this.parent,
             element: this.element

@@ -178,13 +178,13 @@
 </svg>
 */
         }, this);
-        this.elementPath = div.lastChild.lastChild;
+        this.elementPath = div.querySelector('path');
 
         if (parentInfo) {
           this.element = parentInfo.element;
           this.element.appendChild(this.elementPath);
         } else {
-          this.element = div.lastChild;
+          this.element = div.querySelector('svg');
           parentList.push({
             parent: this.parent,
             element: this.element
