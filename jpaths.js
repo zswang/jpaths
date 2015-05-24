@@ -46,6 +46,7 @@
       return json && (key in json) ? json[key] : "";
     });
   }
+  exports.format = format;
 
   /**
    * 解析路径字符串中的详情
@@ -157,8 +158,9 @@
         break;
       case 'svg':
         div = document.createElement('div');
-        div.innerHTML = format( /*#*/ "\n<svg width=100% height=100% xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill=\"#{fill}\"\n    fill-rule=\"evenodd\"\n    stroke-linejoin=\"round\"\n    fill-opacity=\"#{fillOpacity}\"\n    stroke=\"#{stroke}\"\n    stroke-opacity=\"#{strokeOpacity}\"\n    stroke-width=\"#{strokeWidth}\" d=\"#{path}\"\n</svg>\n", this);
+        div.innerHTML = format( /*#*/ "\n<svg width=100% height=100% xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill=\"#{fill}\"\n    fill-rule=\"evenodd\"\n    stroke-linejoin=\"round\"\n    fill-opacity=\"#{fillOpacity}\"\n    stroke=\"#{stroke}\"\n    stroke-opacity=\"#{strokeOpacity}\"\n    stroke-width=\"#{strokeWidth}\" d=\"#{path}\"/>\n</svg>\n", this);
         this.elementPath = div.lastChild.lastChild;
+
         if (parentInfo) {
           this.element = parentInfo.element;
           this.element.appendChild(this.elementPath);
@@ -283,7 +285,7 @@
    * @param {string} name
    * @return {Any} 返回该属性值
    */
-  Path.prototype.attr = function(name, value) {
+  Path.prototype.attr = function(name, value, batch) {
     if (this.freed) {
       return;
     }
@@ -458,11 +460,11 @@
   function create(options) {
     return new Path(options);
   }
+  exports.create = create;
 
   if (renderMode === 'vml') {
     document.createStyleSheet().cssText = format( /*#*/ "\n.#{this}_vml {\n  behavior: url(#default#VML);\n}\n.#{this}_path_shape {\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: 0;\n  left: 0;\n  top: 0;\n  position: absolute;\n}\n.#{this}_path_panel {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  padding: 0;\n  margin: 0;\n  position: relative;\n}\n", exportName);
   }
-  exports.create = create;
 
   if (typeof define === 'function') {
     if (define.amd || define.cmd) {

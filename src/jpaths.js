@@ -53,6 +53,7 @@
       return json && (key in json) ? json[key] : "";
     });
   }
+  exports.format = format;
 
   /**
    * 解析路径字符串中的详情
@@ -173,11 +174,12 @@
     fill-opacity="#{fillOpacity}"
     stroke="#{stroke}"
     stroke-opacity="#{strokeOpacity}"
-    stroke-width="#{strokeWidth}" d="#{path}"
+    stroke-width="#{strokeWidth}" d="#{path}"/>
 </svg>
 */
         }, this);
         this.elementPath = div.lastChild.lastChild;
+
         if (parentInfo) {
           this.element = parentInfo.element;
           this.element.appendChild(this.elementPath);
@@ -320,7 +322,7 @@
    * @param {string} name
    * @return {Any} 返回该属性值
    */
-  Path.prototype.attr = function(name, value) {
+  Path.prototype.attr = function(name, value, batch) {
     if (this.freed) {
       return;
     }
@@ -495,6 +497,7 @@
   function create(options) {
     return new Path(options);
   }
+  exports.create = create;
 
   if (renderMode === 'vml') {
     document.createStyleSheet().cssText = format( /*#*/ function() {
@@ -522,7 +525,6 @@
 */
     }, exportName);
   }
-  exports.create = create;
 
   if (typeof define === 'function') {
     if (define.amd || define.cmd) {

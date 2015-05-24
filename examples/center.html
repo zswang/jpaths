@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <meta name="author" content="http://weibo.com/zswang" />
+  <title>jpaths cube examples</title>
+  <script src="../src/jpaths.js"></script>
+  <style>
+#canvas {
+  border: solid 1px #ccc;
+  width: 500px;
+  height: 500px;
+  position: relative;
+  float: left;
+}
+  </style>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>
+void function() {
+  var pathBase = jpaths.create({
+    parent: 'canvas',
+    origin: 'center'
+  });
+  pathBase.attr({
+    path: 'M 0,0 m -250,0 h 500 M 0,0 m 0,-250 v500'
+  });
+}();
+  </script>
+</body>
+</html>
