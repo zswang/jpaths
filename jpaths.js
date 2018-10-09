@@ -1,9 +1,6 @@
 (function(exportName) {
-
   'use strict';
-
   var exports = exports || {};
-
   /**
    * jpaths
    *
@@ -11,7 +8,6 @@
    * @author 王集鹄(wangjihu,http://weibo.com/zswang)
    * @version 2015-04-11
    */
-
   /**
    * 是否 IE
    */
@@ -32,7 +28,6 @@
    * 容器列表，如果容器是一样的，则不用生成新的 svg 对象
    */
   var parentList = [];
-
   /**
    * 格式化函数
    *
@@ -40,14 +35,19 @@
    * @param {Object} json 数据项
    */
   function format(template, json) {
-    
-
+    /*<debug>*/
+    if (typeof template === 'function') { // 函数多行注释处理
+      template = String(template).replace(
+        /^[^\{]*\{\s*\/\*!?[ \f\t\v]*\n?|[ \f\t\v]*\*\/[;|\s]*\}$/g, // 替换掉函数前后部分
+        ''
+      );
+    }
+    /*</debug>*/
     return template.replace(/#\{(.*?)\}/g, function(all, key) {
       return json && (key in json) ? json[key] : "";
     });
   }
   exports.format = format;
-
   /**
    * 解析路径字符串中的详情
    *
@@ -58,7 +58,6 @@
     var current = [0, 0];
     var movePos = [0, 0];
     var result = [];
-
     String(path).replace(
       /([mlcza])((\s*,?\s*([+-]?\d+(?:\.\d+)?)+)*)/gi,
       function(all, flag, params) {
@@ -96,7 +95,6 @@
     );
     return result;
   }
-
   /**
    * 矢量路径类
    *
@@ -116,14 +114,12 @@
     } else {
       this.parent = options.parent || document.body;
     }
-
     this.fill = options.fill || 'none';
     this.fillOpacity = options.fillOpacity || options['fill-opacity'] || 1;
     this.stroke = options.stroke || 'black';
     this.strokeWidth = options.strokeWidth || options['stroke-width'] || 1;
     this.strokeOpacity = options.strokeOpacity || options['stroke-opacity'] || 1;
     this.path = options.path || 'M 0,0';
-
     // 处理相同的容器
     var parentInfo;
     for (var i = parentList.length - 1; i >= 0; i--) {
@@ -133,13 +129,11 @@
         break;
       }
     }
-
     if (/^canvas$/i.test(this.parent.tagName)) {
       renderMode = 'canvas';
       this.pathDetails = parsePath(this.path);
       this.repaint(true);
     }
-
     var div;
     switch (renderMode) {
       case 'canvas':
@@ -158,9 +152,20 @@
         break;
       case 'svg':
         div = document.createElement('div');
-        div.innerHTML = format( /*#*/ "\n<svg width=100% height=100% xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill=\"#{fill}\"\n    fill-rule=\"evenodd\"\n    stroke-linejoin=\"round\"\n    fill-opacity=\"#{fillOpacity}\"\n    stroke=\"#{stroke}\"\n    stroke-opacity=\"#{strokeOpacity}\"\n    stroke-width=\"#{strokeWidth}\" d=\"#{path}\"/>\n</svg>\n", this);
+        div.innerHTML = format( /*#*/ function() {
+          /*!
+<svg width=100% height=100% xmlns="http://www.w3.org/2000/svg">
+  <path fill="#{fill}"
+    fill-rule="evenodd"
+    stroke-linejoin="round"
+    fill-opacity="#{fillOpacity}"
+    stroke="#{stroke}"
+    stroke-opacity="#{strokeOpacity}"
+    stroke-width="#{strokeWidth}" d="#{path}"/>
+</svg>
+*/
+        }, this);
         this.elementPath = div.querySelector('path');
-
         if (parentInfo) {
           this.element = parentInfo.element;
           this.element.appendChild(this.elementPath);
@@ -178,7 +183,25 @@
         this.filled = this.fill == 'none' ? 'f' : 't';
         this.stroked = this.stroke == 'none' ? 'f' : 't';
         this.zoom = ieZoom;
-        div.innerHTML = format( /*#*/ "\n<v:shape class=\"jpaths_path_shape jpaths_vml\"\n  coordsize=\"#{zoom},#{zoom}\"\n  stroked=\"#{stroked}\"\n  filled=\"#{filled}\"\n  path=\"#{path}\">\n  <v:stroke class=\"jpaths_vml\"\n    opacity=\"#{strokeOpacity}\"\n    color=\"#{stroke}\"\n    weight=\"#{strokeWidth}\">\n  </v:stroke>\n  <v:fill class=\"jpaths_vml\"\n    opacity=\"#{fillOpacity}\"\n    color=\"#{fill}\">\n  </v:fill>\n</v:shape>\n", this);
+        div.innerHTML = format( /*#*/ function() {
+          /*!
+<v:shape class="jpaths_path_shape jpaths_vml"
+  coordsize="#{zoom},#{zoom}"
+  stroked="#{stroked}"
+  filled="#{filled}"
+  path="#{path}">
+  <v:stroke class="jpaths_vml"
+    opacity="#{strokeOpacity}"
+    color="#{stroke}"
+    weight="#{strokeWidth}">
+  </v:stroke>
+  <v:fill class="jpaths_vml"
+    opacity="#{fillOpacity}"
+    color="#{fill}">
+  </v:fill>
+</v:shape>
+*/
+        }, this);
         this.elementPath = div.lastChild;
         if (parentInfo) {
           this.element = parentInfo.element;
@@ -197,7 +220,6 @@
         break;
     }
   }
-
   /**
    * 绘制路径
    *
@@ -271,7 +293,6 @@
     }
     context.restore();
   };
-
   /**
    * 设置或获取属性
    *
@@ -430,7 +451,6 @@
       return this;
     }
   };
-
   /**
    * 释放资源
    */
@@ -456,16 +476,36 @@
         break;
     }
   };
-
   function create(options) {
     return new Path(options);
   }
   exports.create = create;
-
   if (renderMode === 'vml') {
-    document.createStyleSheet().cssText = format( /*#*/ "\n.#{this}_vml {\n  behavior: url(#default#VML);\n}\n.#{this}_path_shape {\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: 0;\n  left: 0;\n  top: 0;\n  position: absolute;\n}\n.#{this}_path_panel {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  padding: 0;\n  margin: 0;\n  position: relative;\n}\n", exportName);
+    document.createStyleSheet().cssText = format( /*#*/ function() {
+      /*!
+.#{this}_vml {
+  behavior: url(#default#VML);
+}
+.#{this}_path_shape {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+.#{this}_path_panel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+*/
+    }, exportName);
   }
-
   if (typeof define === 'function') {
     if (define.amd || define.cmd) {
       define(function() {
@@ -477,5 +517,4 @@
   } else {
     window[exportName] = exports;
   }
-
 })('jpaths');

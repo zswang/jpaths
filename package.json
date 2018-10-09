@@ -24,12 +24,12 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "uglify-js": "2.4.15",
-    "jdists": "0.1.10",
-    "jshint": "2.5.8"
+    "jdists": "^2.2.4",
+    "jshint": "^2.9.6",
+    "uglify-js": "^3.4.9"
   },
   "scripts": {
-    "dist": "jdists src/jpaths.js -o jpaths.js && uglifyjs jpaths.js -o jpaths.min.js -p 5 -c -m",
+    "dist": "jdists src/jpaths.js -o jpaths.js && uglifyjs jpaths.js -o jpaths.min.js -c -m",
     "lint": "jshint src/*.js *.json"
   }
 }
